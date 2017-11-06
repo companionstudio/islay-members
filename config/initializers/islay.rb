@@ -8,12 +8,12 @@ Islay::Engine.extensions.register do |e|
     c.string  :notification_email
   end
 
-  e.reports('Members', :member_reports, :class => 'person')
+  e.reports('Members', :member_reports, :class => 'user')
 
   e.dashboard(:primary, :top, :memberships)
 
   e.nav_section(:members) do |s|
-    s.root('Members', :members, 'person')
+    s.root('Members', :members, 'user')
     s.sub_nav('Index', :member_index)
     s.sub_nav('Activity', :member_activity)
   end

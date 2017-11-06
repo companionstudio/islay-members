@@ -1,0 +1,13 @@
+= resource_form(@member) do |f|
+  = record_name(@member.name, 'user', :when_blank => 'New Member')
+  = form_errors(@member)
+  = content do
+    = f.fieldset(:class => 'primary') do
+      = f.input(:name, :col => 6)
+      = f.input(:email, :col => 6)
+
+    = f.fieldset('Password') do
+      = f.input(:password)
+
+  = footer do
+    = save_button

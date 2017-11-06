@@ -1,0 +1,27 @@
+- breadcrumb('Members')
+
+- filter_nav(:members, 'Enabled')
+- filter_nav(:members, 'Disabled', 'disabled')
+- filter_nav(:members, 'All', 'all')
+
+- sort_nav(:members, 'Name')
+- sort_nav(:members, 'Updated', 'updated_at')
+
+= content do
+  %table.fixed-header(cellpadding=0 cellspacing=0)
+    %thead
+      %th{:colspan => 2} Name
+      %th Updated At
+    %tbody
+      - @members.each do |member|
+        %tr
+          %td.status
+            = member.status
+          %td
+            = link_to(member.name, path(:edit, member), :class => 'title')
+          %td
+            %span.time= member.updated_at
+
+= footer do
+  = new_button('Member', :member)
+  = paginate(@members, :theme => 'admin')

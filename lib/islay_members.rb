@@ -6,5 +6,5 @@ require "country_select"
 require "islay_members/engine"
 require "islay_members/controller_extensions"
 
-module IslayMembers
+module IslayMember
 end
