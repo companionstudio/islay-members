@@ -1,6 +1,6 @@
 class PaymentMethods < ActiveRecord::Migration
   def change
-    create_table :PaymentMethods do |t|
+    create_table :payment_methods do |t|
       t.integer   :member_id,     :null => false
       t.boolean   :default,       :default => false
       t.string    :label,         :limit => 64, :default => 'Main card', :null => false

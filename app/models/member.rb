@@ -8,6 +8,18 @@ class Member < ActiveRecord::Base
   include PgSearch
   multisearchable :against => [:name, :email]
 
+  has_many :addresses
+
+  has_one :default_address, -> {where(:default => true)}
+  has_one :billing_address, -> {where(:type => 'billing')}
+  has_one :shipping_address, -> {where(:type => 'shipping')}
+
+  has_many :payment_methods
+  has_one  :default_payment_method, -> {where(:default => true)}
+
+  accepts_nested_attributes_for :addresses
+  accepts_nested_attributes_for :payment_methods
+
   def self.filtered(filter)
     case filter
     when 'all' then all

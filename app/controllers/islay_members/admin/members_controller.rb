@@ -3,7 +3,7 @@ module IslayMembers
     class MembersController < ApplicationController
       resourceful :member
       header 'Members'
-      nav_scope :config
+      nav_scope :member
 
       def index
         @members = Member.page(params[:page]).filtered(params[:filter]).sorted(params[:sort])
@@ -16,6 +16,15 @@ module IslayMembers
 
       def redirect_for(model)
         path(:members)
+      end
+
+      def dependencies
+        prepare_for_editing if editing? or creating?
+      end
+
+      def prepare_for_editing
+        @member.addresses.build
+        @member.payment_methods.build
       end
     end
   end

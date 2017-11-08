@@ -6,7 +6,7 @@ class CreateMembers < ActiveRecord::Migration
       t.string    :encrypted_password,      :null => false, :limit => 200
       t.string    :reset_password_token,    :null => true,  :limit => 200, :index => :unique
       t.datetime  :reset_password_sent_at,  :null => true
-      t.string    :status,                  :null => false, :limit => 64, :default => 'inactive'
+      t.string    :status,                  :null => false, :limit => 64, :default => 'active'
 
       t.hstore    :metadata,                :null => true
 
