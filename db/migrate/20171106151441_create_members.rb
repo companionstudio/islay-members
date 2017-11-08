@@ -8,6 +8,9 @@ class CreateMembers < ActiveRecord::Migration
       t.datetime  :reset_password_sent_at,  :null => true
       t.string    :status,                  :null => false, :limit => 64, :default => 'inactive'
 
+      t.hstore    :metadata,                :null => true
+
+      t.user_tracking(true)
       t.timestamps
     end
   end
