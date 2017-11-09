@@ -10,23 +10,21 @@
       = f.input(:password)
 
     = f.fieldset('Addresses') do
-      - f.object.addresses.each do |address|
-        = f.fields_for(address) do |af|
-          = af.input(:type, :collection => Address.address_type_options, :include_blank => true, :label => 'Type')
-          = af.input(:default)
-          = af.input(:company)
-          = af.input(:street)
-          = af.input(:city)
-          = af.input(:postcode)
-          = af.input(:country)
+      = f.fields_for(:addresses) do |af|
+        = af.input(:type, :collection => Address.address_type_options, :include_blank => true, :label => 'Type')
+        = af.input(:default)
+        = af.input(:company)
+        = af.input(:street)
+        = af.input(:city)
+        = af.input(:postcode)
+        = af.input(:country)
 
     = f.fieldset('Saved Payment Methods') do
-      - f.object.payment_methods.each do |payment_method|
-        = f.fields_for(payment_method) do |pmf|
-          = pmf.input(:type, :collection => Address.address_type_options, :include_blank => true, :label => 'Type')
-          = pmf.input(:default)
-          = pmf.input(:label)
-          = pmf.input(:provider)
+      = f.fields_for(:payment_methods) do |pmf|
+        = pmf.input(:type, :collection => Address.address_type_options, :include_blank => true, :label => 'Type')
+        = pmf.input(:default)
+        = pmf.input(:label)
+        = pmf.input(:provider)
 
 
   = footer do
