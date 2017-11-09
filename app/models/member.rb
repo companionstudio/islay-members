@@ -2,6 +2,8 @@ class Member < ActiveRecord::Base
   devise :database_authenticatable, :recoverable, :validatable
 
   ACTIVE_USER_STATUSES = ['active'].freeze
+  INACTIVE_USER_STATUSES = ['inactive', 'cancelled'].freeze
+  USER_STATUSES = (ACTIVE_USER_STATUSES + INACTIVE_USER_STATUSES).freeze
 
   validations_from_schema
 
@@ -25,6 +27,20 @@ class Member < ActiveRecord::Base
     when 'all' then all
     when 'disabled' then where.not(:status => ACTIVE_USER_STATUSES)
     else where(:status => ACTIVE_USER_STATUSES)
+    end
+  end
+
+  def self.active
+    where(:status => ACTIVE_USER_STATUSES)
+  end
+
+  def self.with_payment_method
+    includes(:payment_methods).where.not(payment_methods: {id: nil})
+  end
+
+  def self.member_status_options
+    @member_status_options ||= USER_STATUSES.map do |t|
+      [t.humanize, t]
     end
   end
 

@@ -1,4 +1,6 @@
 class Address < ActiveRecord::Base
+  self.inheritance_column = :_type_disabled
+  
   belongs_to :member
 
   BASE_ADDRESS_TYPES = %w{billing shipping other}.freeze
