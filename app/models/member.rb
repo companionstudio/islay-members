@@ -13,11 +13,9 @@ class Member < ActiveRecord::Base
   has_many :addresses
 
   has_one :default_address, -> {where(:default => true)}
-  has_one :billing_address, -> {where(:type => 'billing')}
-  has_one :shipping_address, -> {where(:type => 'shipping')}
 
   has_many :payment_methods
-  has_one  :default_payment_method, -> {where(:default => true)}
+  has_one  :default_payment_method, -> {where(:default => true)}, class_name: 'PaymentMethod'
 
   accepts_nested_attributes_for :addresses
   accepts_nested_attributes_for :payment_methods
@@ -52,8 +50,20 @@ class Member < ActiveRecord::Base
     order(sort || :name)
   end
 
+  def billing_address
+    addresses.count == 1 ? addresses.first : addresses.where(type: 'billing').first
+  end
+
+  def shipping_address
+    addresses.count == 1 ? addresses.first : addresses.where(type: 'shipping').first
+  end
+
   def destroyable?
     true
+  end
+
+  def active?
+    status.in? ACTIVE_USER_STATUSES
   end
 
   private
