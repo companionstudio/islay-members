@@ -17,7 +17,7 @@ class Member < ActiveRecord::Base
   has_one :shipping_address, -> {where(:type => 'shipping')}
 
   has_many :payment_methods
-  has_one  :default_payment_method, -> {where(:default => true)}
+  has_one  :default_payment_method, -> {where(:default => true)}, class_name: 'PaymentMethod'
 
   accepts_nested_attributes_for :addresses
   accepts_nested_attributes_for :payment_methods
@@ -50,6 +50,10 @@ class Member < ActiveRecord::Base
   # @param [String, nil] sort
   def self.sorted(sort)
     order(sort || :name)
+  end
+
+  def active?
+    status.in? ACTIVE_USER_STATUSES
   end
 
   def destroyable?
