@@ -5,29 +5,31 @@
     = f.fieldset(:class => 'primary') do
       = f.input(:name, :col => 6)
       = f.input(:email, :col => 6)
+      = f.input(:phone, :col => 6)
       = f.input(:status, :collection => Member.member_status_options, :include_blank => true, :label => 'Status')
-
 
     = f.fieldset('Password') do
       = f.input(:password)
 
     = f.fieldset('Addresses') do
       = f.fields_for(:addresses) do |af|
-        = af.input(:type, :collection => Address.address_type_options, :include_blank => true, :label => 'Type')
-        = af.input(:default)
-        = af.input(:company)
-        = af.input(:street)
-        = af.input(:city)
-        = af.input(:state)
-        = af.input(:postcode)
-        = af.input(:country)
+        .form-block
+          = af.input(:type, :collection => Address.address_type_options, :include_blank => true, :label => 'Type')
+          = af.input(:default)
+          = af.input(:company)
+          = af.input(:street)
+          = af.input(:city)
+          = af.input(:state)
+          = af.input(:postcode)
+          = af.input(:country)
 
     = f.fieldset('Saved Payment Methods') do
       = f.fields_for(:payment_methods) do |pmf|
-        = pmf.input(:type, :collection => PaymentMethod.card_type_options, :include_blank => true, :label => 'Type')
-        = pmf.input(:default)
-        = pmf.input(:label)
-        = pmf.input(:provider)
+        .form-block
+          = pmf.input(:type, :collection => PaymentMethod.card_type_options, :include_blank => true, :label => 'Type')
+          = pmf.input(:default)
+          = pmf.input(:label)
+          = pmf.input(:provider)
 
   = footer do
     = save_button

@@ -1,5 +1,5 @@
 class Member < ActiveRecord::Base
-  devise :database_authenticatable, :recoverable, :validatable
+  devise :database_authenticatable, :recoverable, :validatable, :registerable, :rememberable, :confirmable
 
   ACTIVE_USER_STATUSES = ['active'].freeze
   INACTIVE_USER_STATUSES = ['inactive', 'cancelled'].freeze
@@ -13,14 +13,18 @@ class Member < ActiveRecord::Base
   has_many :addresses
 
   has_one :default_address, -> {where(:default => true)}
-  has_one :billing_address, -> {where(:type => 'billing')}
-  has_one :shipping_address, -> {where(:type => 'shipping')}
 
   has_many :payment_methods
   has_one  :default_payment_method, -> {where(:default => true)}, class_name: 'PaymentMethod'
 
-  accepts_nested_attributes_for :addresses
-  accepts_nested_attributes_for :payment_methods
+  has_many :member_orders
+  has_many :orders, through: :member_orders
+  has_many :offer_orders, through: :orders
+  has_many :offers, through: :offer_orders
+
+
+  accepts_nested_attributes_for :addresses, reject_if: proc {|a| a[:street].blank? and a[:postcode].blank?}
+  accepts_nested_attributes_for :payment_methods, reject_if: proc {|a| a[:provider].blank?}
 
   def self.filtered(filter)
     case filter
@@ -52,12 +56,21 @@ class Member < ActiveRecord::Base
     order(sort || :name)
   end
 
-  def active?
-    status.in? ACTIVE_USER_STATUSES
+
+  def billing_address
+    addresses.count == 1 ? addresses.first : addresses.find_by(type: 'billing')
+  end
+
+  def shipping_address
+    addresses.count == 1 ? addresses.first : addresses.find_by(type: 'shipping')
   end
 
   def destroyable?
     true
+  end
+
+  def active?
+    status.in? ACTIVE_USER_STATUSES
   end
 
   private

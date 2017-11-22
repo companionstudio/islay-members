@@ -15,7 +15,9 @@ Rails.application.routes.draw do
     end
   end
 
-  islay_secure_public 'members' do
-  end 
+  islay_secure_public 'islay_members' do
+    get '/club' => 'members#index'
+    post '/join' => 'members#create'
+  end
 
 end
