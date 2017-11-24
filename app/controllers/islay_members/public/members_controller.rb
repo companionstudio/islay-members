@@ -3,7 +3,7 @@ class IslayMembers::Public::MembersController < IslayMembers::Public::Applicatio
 
   def index
     if member_signed_in?
-      template = :index_logged_in
+      render template = :index_logged_in
     else
       redirect_to new_member_registration_path
     end
