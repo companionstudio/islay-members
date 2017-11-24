@@ -1,21 +1,27 @@
 class IslayMembers::Public::MembersController < IslayMembers::Public::ApplicationController
+  before_action :authenticate_member!, except: :index
 
   def index
-    @membership = Member.new
+    template = member_signed_in? ? :index_logged_in : :index_logged_out
+    render template
   end
 
-  def home
-    
+  def index_logged_in
   end
 
-  def create
-    @membership = Member.create!(permitted_params[:member])
-    redirect_to public_club_home_path
+  def index_logged_out
+  end
+
+  # GET /account
+  def edit
+  end
+
+  def offers
+  end
+
+  def orders
   end
 
   private
 
-  def permitted_params
-    params.permit!
-  end
 end

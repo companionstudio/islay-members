@@ -1,0 +1,19 @@
+= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: {id: 'club-form'}) do |f|
+
+  = f.input(:name)
+  = f.input(:phone)
+  = f.input(:email)
+  = f.input(:password, autocomplete: "off")
+  = f.input(:password_confirmation, autocomplete: "off")
+  - if @minimum_password_length
+    %em
+      (#{@minimum_password_length} characters minimum)
+
+  .age-gate.field.boolean
+    %input{:type => 'checkbox', :id => 'proof-of-age', :name => '18+', :checked => params['18+'] == 'on' ? 'checked' : nil}
+    %label{:for => 'proof-of-age'} I am at least 18 years of age
+
+  .islay-shop-checkout-controls
+    %button{:type => 'submit'} Join now
+
+= render "devise/shared/links"

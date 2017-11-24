@@ -7,8 +7,8 @@ class Member < ActiveRecord::Base
 
   validations_from_schema
 
-  include PgSearch
-  multisearchable :against => [:name, :email]
+  # include PgSearch
+  # multisearchable :against => [:name, :email]
 
   has_many :addresses
 
@@ -21,7 +21,6 @@ class Member < ActiveRecord::Base
   has_many :orders, through: :member_orders
   has_many :offer_orders, through: :orders
   has_many :offers, through: :offer_orders
-
 
   accepts_nested_attributes_for :addresses, reject_if: proc {|a| a[:street].blank? and a[:postcode].blank?}
   accepts_nested_attributes_for :payment_methods, reject_if: proc {|a| a[:provider].blank?}
@@ -81,7 +80,7 @@ class Member < ActiveRecord::Base
   #
   # @return [User, nil]
   def self.find_for_database_authentication(conditions)
-    find_for_authentication(conditions.merge('status' => ACTIVE_USER_STATUSES))
+    find_for_authentication(conditions.merge('status' => "active"))
   end
 
   protected

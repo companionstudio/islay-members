@@ -1,0 +1,13 @@
+= simple_form_for(membership, :url => public_join_path, html: {id: 'club-form'}) do |f|
+
+  = f.input(:name)
+  = f.input(:phone)
+  = f.input(:email)
+  = f.input(:password)
+
+  .age-gate.field.boolean
+    %input{:type => 'checkbox', :id => 'proof-of-age', :name => '18+', :checked => params['18+'] == 'on' ? 'checked' : nil}
+    %label{:for => 'proof-of-age'} I am at least 18 years of age
+
+  .islay-shop-checkout-controls
+    %button{:type => 'submit'} Join now
