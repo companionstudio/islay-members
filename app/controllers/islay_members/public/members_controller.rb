@@ -2,8 +2,11 @@ class IslayMembers::Public::MembersController < IslayMembers::Public::Applicatio
   before_action :authenticate_member!, except: :index
 
   def index
-    template = member_signed_in? ? :index_logged_in : :index_logged_out
-    render template
+    if member_signed_in?
+      template = :index_logged_in
+    else
+      redirect_to new_member_registration_path
+    end
   end
 
   def index_logged_in

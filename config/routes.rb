@@ -6,11 +6,11 @@ Rails.application.routes.draw do
     :password_length => (5..72),
     :controllers  => {
       :sessions => "islay_members/public/sessions",
-      :passwords => "islay_members/members/passwords",
+      :passwords => "islay_members/public/passwords",
       :registrations => 'islay_members/public/registrations'
     }
   )
-  
+
   islay_admin 'islay_members' do
     resources :members do
       get '(/filter-:filter)(/sort-:sort)', :action => :index, :as => 'filter_and_sort', :on => :collection

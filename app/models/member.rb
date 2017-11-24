@@ -12,7 +12,7 @@ class Member < ActiveRecord::Base
 
   has_many :addresses
 
-  has_one :default_address, -> {where(:default => true)}
+  has_one :default_address, -> {where(:default => true)}, class_name: 'Address'
 
   has_many :payment_methods
   has_one  :default_payment_method, -> {where(:default => true)}, class_name: 'PaymentMethod'
@@ -55,6 +55,23 @@ class Member < ActiveRecord::Base
     order(sort || :name)
   end
 
+  def first_name
+    parts = name.split(' ')
+    case parts.count
+    when 1 then name
+    when 2 then parts[0]
+    else
+      if parts[0].downcase.in? %w{mr mrs miss ms dr}
+        parts[1]
+      else
+        parts[0]
+      end
+    end
+  end
+
+  def last_name
+    name.split(' ').last
+  end
 
   def billing_address
     addresses.count == 1 ? addresses.first : addresses.find_by(type: 'billing')
@@ -70,6 +87,28 @@ class Member < ActiveRecord::Base
 
   def active?
     status.in? ACTIVE_USER_STATUSES
+  end
+
+  def new_member?
+    created_at > 2.days.ago
+  end
+
+  def complete?
+    confirmed? and default_address.present? and default_payment_method.present?
+  end
+
+  def soft_delete
+    update_attributes(status: 'cancelled', deleted_at: Time.current)
+  end
+
+  # ensure user account is active
+  def active_for_authentication?
+    super && !deleted_at
+  end
+
+  # provide a custom message for a deleted account
+  def inactive_message
+  	!deleted_at ? super : :deleted_account
   end
 
   private

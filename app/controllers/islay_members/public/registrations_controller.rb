@@ -22,10 +22,13 @@ class IslayMembers::Public::RegistrationsController < Devise::RegistrationsContr
   #   super
   # end
 
-  # DELETE /resource
-  # def destroy
-  #   super
-  # end
+  def destroy
+    resource.soft_delete
+    Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
+    set_flash_message :notice, :destroyed if is_flashing_format?
+    yield resource if block_given?
+    respond_with_navigational(resource){ redirect_to after_sign_out_path_for(resource_name) }
+  end
 
   # GET /resource/cancel
   # Forces the session data which is usually expired after sign
@@ -43,18 +46,19 @@ class IslayMembers::Public::RegistrationsController < Devise::RegistrationsContr
     devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :phone])
   end
 
+
   # If you have extra params to permit, append them to the sanitizer.
   # def configure_account_update_params
   #   devise_parameter_sanitizer.permit(:account_update, keys: [:attribute])
   # end
 
   # The path used after sign up.
-  # def after_sign_up_path_for(resource)
-  #   super(resource)
-  # end
+  def after_sign_up_path_for(resource)
+    public_club_path
+  end
 
   # The path used after sign up for inactive accounts.
-  # def after_inactive_sign_up_path_for(resource)
-  #   super(resource)
-  # end
+  def after_inactive_sign_up_path_for(resource)
+    public_club_path
+  end
 end
