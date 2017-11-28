@@ -1,0 +1,34 @@
+%h1 Your addresses
+
+%table.address-list
+  - if current_member.addresses.empty?
+    %tbody
+      %tr
+        %td
+          You haven't added any address details yet.
+          = link_to('Add another address', public_member_address_new_path)
+  - else
+    %thead
+      %tr
+        %th.boolean Default?
+        %th Street
+        %th City
+        %th Postcode
+        %th State
+    %tbody
+      - current_member.addresses.each do |address|
+        %tr.boolean
+          %td
+            - if address.default?
+              %i.fa.fa-check
+
+          %td= address.street
+          %td= address.city
+          %td= address.postcode
+          %td= address.state
+
+    %tfoot
+      %tr
+        %td.boolean
+        %td{colspan: 4}
+          = link_to('Add another address', public_member_address_new_path)

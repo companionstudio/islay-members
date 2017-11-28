@@ -21,15 +21,24 @@ Rails.application.routes.draw do
   islay_secure_public 'islay_members' do
 
     get   '/club' => 'members#index'
-    get   '/join' => 'members#new'
-    post  '/join' => 'members#create'
 
     scope '/members' do
       get   '/'         => 'members#index'
-      get   '/account'  => 'members#edit'
       get   '/offers'   => 'members#offers'
       get   '/orders'   => 'members#orders'
+
+      scope '/address', controller: 'member_address', as: 'member_address' do
+        get    '/',       action: 'index'
+        get    '/new',    action: 'new'
+        post   '/create', action: 'create'
+        get    '/:id',    action: 'edit'
+        patch  '/:id',    action: 'update'
+        put    '/:id',    action: 'update'
+        delete '/:id',    action: 'delete'
+      end
     end
+
+
 
   end
 
