@@ -27,15 +27,16 @@ Rails.application.routes.draw do
       get   '/offers'   => 'members#offers'
       get   '/orders'   => 'members#orders'
 
-      scope '/address', controller: 'member_address', as: 'member_address' do
-        get    '/',       action: 'index'
-        get    '/new',    action: 'new'
-        post   '/create', action: 'create'
-        get    '/:id',    action: 'edit'
-        patch  '/:id',    action: 'update'
-        put    '/:id',    action: 'update'
-        delete '/:id',    action: 'delete'
-      end
+      resources :addresses, as: 'member_address', controller: 'member_address'
+      # scope '/address', controller: 'member_address', as: 'member_address' do
+      #   get    '/',       action: 'index'
+      #   get    '/new',    action: 'new'
+      #   post   '/create', action: 'create'
+      #   get    '/:id',    action: 'edit'
+      #   patch  '/:id',    action: 'update'
+      #   put    '/:id',    action: 'update'
+      #   delete '/:id',    action: 'delete'
+      # end
     end
 
 

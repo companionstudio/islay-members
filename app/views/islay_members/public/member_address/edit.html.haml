@@ -1,0 +1,5 @@
+%h1 Edit address
+
+= render partial: 'form', locals: {address: @address}
+
+= button_to('Delete address', {action: :destroy, controller: :member_address, id: @address.id}, method: 'delete')

@@ -6,11 +6,12 @@
       %tr
         %td
           You haven't added any address details yet.
-          = link_to('Add another address', public_member_address_new_path)
+          = link_to('Add your address', new_public_member_address_path)
   - else
     %thead
       %tr
         %th.boolean Default?
+        %th Used for
         %th Street
         %th City
         %th Postcode
@@ -22,7 +23,8 @@
             - if address.default?
               %i.fa.fa-check
 
-          %td= address.street
+          %td= address.friendly_type
+          %td= link_to(address.street, edit_public_member_address_path(address))
           %td= address.city
           %td= address.postcode
           %td= address.state
@@ -31,4 +33,4 @@
       %tr
         %td.boolean
         %td{colspan: 4}
-          = link_to('Add another address', public_member_address_new_path)
+          = link_to('Add another address', new_public_member_address_path)

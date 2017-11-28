@@ -1,0 +1,17 @@
+= simple_form_for([:public, :member, address], url: url_for(action: address.new_record? ? :create : :update, controller: :member_address), html: {id: 'club-form'}) do |f|
+
+  - if address.only?
+    %p This address will be used for both billing and shipping.
+  - else
+    = f.input(:type, collection: Address.friendly_address_type_options, include_blank: false)
+
+  = f.input(:company)
+  = f.input(:street)
+  = f.input(:city)
+  = f.input(:state)
+  = f.input(:postcode)
+  = f.input(:country)
+  = f.input(:instructions, as: 'text')
+
+  .islay-shop-checkout-controls
+    %button{:type => 'submit'} Save
