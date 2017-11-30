@@ -1,4 +1,6 @@
 class Member < ActiveRecord::Base
+  include BraintreeCustomerConcern
+
   devise :database_authenticatable, :recoverable, :validatable, :registerable, :rememberable, :confirmable
 
   ACTIVE_USER_STATUSES = ['active'].freeze
@@ -14,8 +16,8 @@ class Member < ActiveRecord::Base
 
   has_one :default_address, -> {where(:default => true)}, class_name: 'Address'
 
-  has_many :payment_methods
-  has_one  :default_payment_method, -> {where(:default => true)}, class_name: 'PaymentMethod'
+  # has_many :payment_methods
+  # has_one  :default_payment_method, -> {where(:default => true)}, class_name: 'PaymentMethod'
 
   has_many :member_orders
   has_many :orders, through: :member_orders
@@ -23,7 +25,7 @@ class Member < ActiveRecord::Base
   has_many :offers, through: :offer_orders
 
   accepts_nested_attributes_for :addresses, reject_if: proc {|a| a[:street].blank? and a[:postcode].blank?}
-  accepts_nested_attributes_for :payment_methods, reject_if: proc {|a| a[:provider].blank?}
+  # accepts_nested_attributes_for :payment_methods, reject_if: proc {|a| a[:provider].blank?}
 
   def self.filtered(filter)
     case filter

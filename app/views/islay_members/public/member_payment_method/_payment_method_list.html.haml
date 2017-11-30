@@ -1,0 +1,25 @@
+%table.payment-method-list
+  - if payment_methods.empty?
+    %tbody
+      %tr
+        %td
+          You haven't added any payment information yet.
+          = link_to('Add your payment details', new_public_member_payment_path)
+  - else
+    %thead
+      %tr
+        %th Card
+
+    %tbody
+      - payment_methods.each do |payment_method|
+        %tr
+          %td
+            %a{href: edit_public_member_payment_path(payment_method)}
+              %img{src: payment_method.image_url}
+              #{payment_method.cardholder_name} #{payment_method.card_type} ending in #{payment_method.last_4}
+              - if payment_method.default?
+                %span.payment-method-list-flag Default
+
+    %tfoot
+      %tr
+        %td= link_to('Add another card', new_public_member_payment_path)

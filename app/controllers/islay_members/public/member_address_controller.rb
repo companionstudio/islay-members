@@ -7,7 +7,6 @@ class IslayMembers::Public::MemberAddressController < IslayMembers::Public::Appl
   end
 
   def new
-    @address = current_member.addresses.build
   end
 
   def edit

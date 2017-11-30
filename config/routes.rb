@@ -28,15 +28,8 @@ Rails.application.routes.draw do
       get   '/orders'   => 'members#orders'
 
       resources :addresses, as: 'member_address', controller: 'member_address'
-      # scope '/address', controller: 'member_address', as: 'member_address' do
-      #   get    '/',       action: 'index'
-      #   get    '/new',    action: 'new'
-      #   post   '/create', action: 'create'
-      #   get    '/:id',    action: 'edit'
-      #   patch  '/:id',    action: 'update'
-      #   put    '/:id',    action: 'update'
-      #   delete '/:id',    action: 'delete'
-      # end
+
+      resources :payment_methods, path: 'payment', as: 'member_payment', controller: 'member_payment_method'
     end
 
 

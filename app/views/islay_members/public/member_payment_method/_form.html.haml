@@ -1,0 +1,20 @@
+= simple_form_for(payment_method, :as => :credit_card, :url => @config[:url]) do |f|
+  - unless payment_method.errors.empty?
+    .validation-error
+      %p There was a problem processing your payment details. See below for more detail.
+      - unless payment_method.errors.messages[:base].blank?
+        - payment_method.errors.messages[:base].each do |message|
+          %p.message-detail= message
+
+  - @config[:hidden_fields].each do |name, value|
+    = hidden_field_tag(name, value)
+
+  = f.input(:number, input_opts(:number, :label => 'Card number', :pattern => '[0-9]*', :type => 'tel'))
+  = f.input(:name, input_opts(:name))
+  = f.input(:cvv, input_opts(:cvv, :label => 'Security code', :pattern => '[0-9]*', :type => 'tel'))
+  .inline-group
+    = f.input(:expiration_month, select_opts(:expiration_month, 'Month', @months, :label => 'Expiry'))
+    = f.input(:expiration_year, select_opts(:expiration_year, 'Year', @years, :label => '/'))
+
+  .button-bar
+    %button(type="submit") Place order & Pay

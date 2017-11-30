@@ -1,0 +1,15 @@
+= form_tag({action: :create, controller: :member_payment_method}, id: 'add-member-payment-method', class: 'add-payment-method club-form') do
+  .field
+    %label Card number
+    #card-number.hosted-input
+  .field
+    %label CVV
+    #cvv.hosted-input
+  .field
+    %label Expiry
+    .inline-group
+      #expiration-month.hosted-input
+      #expiration-year.hosted-input
+
+  .add-payment-method-controls
+    %button{type: 'submit', disabled: 'disabled'} Save

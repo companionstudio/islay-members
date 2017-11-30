@@ -1,0 +1,39 @@
+= javascript_include_tag('https://js.braintreegateway.com/js/braintree-2.32.1.min.js')
+
+:javascript
+  var form = document.querySelector('#add-member-payment-method');
+  var submit = form.querySelector('button[type="submit"]');
+
+  var options = {
+    id: 'add-member-payment-method',
+    hostedFields: {
+      number: {
+        selector: '#card-number',
+        placeholder: '•••• •••• •••• ••••'
+      },
+      cvv: {
+        selector: '#cvv',
+        placeholder: '•••'
+      },
+      expirationMonth: {
+        selector: '#expiration-month',
+        placeholder: 'MM'
+      },
+      expirationYear: {
+        selector: '#expiration-year',
+        placeholder: 'YYYY'
+      },
+
+      styles: {
+        input: {
+          'font-size': '1rem',
+          'color': '#222'
+        }
+      },
+    },
+    onReady: function(){
+      submit.removeAttribute('disabled');
+    }
+  };
+
+  braintree.setup('#{@braintree_token}', 'custom', options);
