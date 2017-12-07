@@ -2,7 +2,7 @@
 # transparent redirect. It is part of a set of classes and modules which
 # wrap around the functionality provided by the SpookAndPay gem.
 class PaymentMethodSubmission
-  require Braintree
+  include Braintree
 
   # Set up naming. This is requried by the Errors class.
   extend ActiveModel::Naming
