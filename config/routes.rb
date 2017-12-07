@@ -19,20 +19,15 @@ Rails.application.routes.draw do
   end
 
   islay_secure_public 'islay_members' do
-
-    get   '/club' => 'members#index'
-
-    scope '/members' do
-      get   '/'         => 'members#index'
-      get   '/offers'   => 'members#offers'
-      get   '/orders'   => 'members#orders'
+    scope '/account' do
+      get   '/'         => 'members#index',  as: 'member_index'
+      get   '/edit'     => 'members#edit',   as: 'member_edit'
+      post  '/'         => 'members#update'
+      patch '/'         => 'members#update', as: 'member_update'
 
       resources :addresses, as: 'member_address', controller: 'member_address'
-
       resources :payment_methods, path: 'payment', as: 'member_payment', controller: 'member_payment_method'
     end
-
-
 
   end
 

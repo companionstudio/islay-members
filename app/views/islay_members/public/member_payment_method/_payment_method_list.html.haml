@@ -14,11 +14,13 @@
       - payment_methods.each do |payment_method|
         %tr
           %td
-            %a{href: edit_public_member_payment_path(payment_method)}
+            %a{href: public_member_payment_path(payment_method.token)}
               %img{src: payment_method.image_url}
               #{payment_method.cardholder_name} #{payment_method.card_type} ending in #{payment_method.last_4}
               - if payment_method.default?
                 %span.payment-method-list-flag Default
+              - if payment_method.expired?
+                %span.payment-method-list-flag.is-expired Expired
 
     %tfoot
       %tr

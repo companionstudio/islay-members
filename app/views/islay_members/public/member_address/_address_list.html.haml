@@ -1,7 +1,5 @@
-%h1 Your addresses
-
 %table.address-list
-  - if current_member.addresses.empty?
+  - if addresses.empty?
     %tbody
       %tr
         %td
@@ -17,13 +15,13 @@
         %th Postcode
         %th State
     %tbody
-      - current_member.addresses.each do |address|
+      - addresses.each do |address|
         %tr.boolean
           %td
             - if address.default?
               %i.fa.fa-check
 
-          %td= address.friendly_type
+          %td= link_to(address.friendly_type, edit_public_member_address_path(address))
           %td= link_to(address.street, edit_public_member_address_path(address))
           %td= address.city
           %td= address.postcode
@@ -32,5 +30,5 @@
     %tfoot
       %tr
         %td.boolean
-        %td{colspan: 4}
+        %td{colspan: 5}
           = link_to('Add another address', new_public_member_address_path)

@@ -1,29 +1,28 @@
 class IslayMembers::Public::MemberPaymentMethodController < IslayMembers::Public::ApplicationController
   before_action :authenticate_member!
+  before_filter :generate_braintree_token, except: [:index, :show]
 
   def index
   end
 
   def new
-    @braintree_token = Braintree::ClientToken.generate
   end
 
   def show
-
+    @payment_method = current_member.payment_methods.find{|pm|pm.token == params[:id]}
   end
 
   def edit
   end
 
   def create
-    @braintree_token = Braintree::ClientToken.generate
     result = Braintree::PaymentMethod.create(customer_id: current_member.payment_vault_id, payment_method_nonce: params['payment_method_nonce'])
 
     if result.success?
-      flash[:result]  = 'Payment method saved'
+      flash[:result] = 'Payment method saved'
       redirect_to public_member_payment_path
     else
-      flash[:result]  = "We couldn't save your card details"
+      flash[:result] = "We couldn't save your card details"
     end
   end
 
@@ -44,6 +43,10 @@ class IslayMembers::Public::MemberPaymentMethodController < IslayMembers::Public
 
   def persist!(payment_method)
 
+  end
+
+  def generate_braintree_token
+    @braintree_token = Braintree::ClientToken.generate
   end
 
   def find_resource

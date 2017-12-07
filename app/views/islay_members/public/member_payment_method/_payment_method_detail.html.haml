@@ -1,0 +1,17 @@
+.payment-method-detail
+  %h2.payment-method-detail-name
+    %img.card-type-icon{src: payment_method.image_url}
+    Your #{payment_method.card_type} card
+
+  .payment-method-detail-mask
+    %strong Number
+    XXXX-XXXX-XXXX-#{payment_method.last_4}
+    
+  .payment-method-detail-expiry
+    %strong Expires
+    = payment_method.expiration_date
+
+  - if payment_method.default?
+    %span.payment-method-list-flag Default
+  - if payment_method.expired?
+    %span.payment-method-list-flag.is-expired Expired

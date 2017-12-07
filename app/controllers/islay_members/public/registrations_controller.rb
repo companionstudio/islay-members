@@ -8,9 +8,12 @@ class IslayMembers::Public::RegistrationsController < Devise::RegistrationsContr
   # end
 
   # POST /resource
-  # def create
-  #   super
-  # end
+  def create
+    super
+    if @member.persisted?
+      MemberMailer.new_registration(@member).deliver
+    end
+  end
 
   # GET /resource/edit
   # def edit
@@ -18,9 +21,10 @@ class IslayMembers::Public::RegistrationsController < Devise::RegistrationsContr
   # end
 
   # PUT /resource
-  # def update
-  #   super
-  # end
+  def update
+    flash[:result] = 'Membership details saved'
+    super
+  end
 
   def destroy
     resource.soft_delete

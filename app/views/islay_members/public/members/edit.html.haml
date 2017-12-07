@@ -1,0 +1,9 @@
+= simple_form_for(current_member, :url => public_member_update_path, html: {id: 'club-form'}) do |f|
+
+  = f.input(:name)
+  = f.input(:phone)
+  = f.input(:email)
+  = f.input(:password)
+
+  .islay-member-controls
+    %button{:type => 'submit'} Save

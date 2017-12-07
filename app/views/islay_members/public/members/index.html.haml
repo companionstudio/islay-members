@@ -1,1 +1,6 @@
-%h1 Join the Club
+%h1 Your membership
+
+%ul.member-account-navigation
+  %li= link_to('Address details', public_member_address_index_path)
+  %li= link_to('Payment information', public_member_payment_index_path)
+  %li= link_to('Member and contact information', public_member_edit_path)

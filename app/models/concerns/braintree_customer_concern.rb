@@ -28,12 +28,13 @@ module BraintreeCustomerConcern
 
   # Find a braintree customer based on their vault ID
   def braintree_customer
-    raise "Can't look up a customer without a vault ID" if payment_vault_id.blank?
+    return nil unless payment_vault_id
 
     @braintree_customer ||= Braintree::Customer.find(payment_vault_id)
   end
 
   def payment_methods
+    return [] unless braintree_customer
     @payment_methods ||= braintree_customer.payment_methods
   end
 

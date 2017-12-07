@@ -24,7 +24,6 @@ module IslayMembers
 
       def prepare_for_editing
         @member.addresses.build
-        @member.payment_methods.build
       end
     end
   end

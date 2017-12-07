@@ -1,0 +1,5 @@
+%h1 Welcome!
+
+%p Thank you for joining. So we know that this is your correct email address, please click the link below.
+
+%p= link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @resource.confirmation_token)

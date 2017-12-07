@@ -6,7 +6,15 @@
       = f.input(:name, :col => 6)
       = f.input(:email, :col => 6)
       = f.input(:phone, :col => 6)
+
+    = f.fieldset('Status') do
       = f.input(:status, :collection => Member.member_status_options, :include_blank => true, :label => 'Status')
+      %p.note
+        - if f.object.confirmed?
+          Confirmed on #{f.object.confirmed_at}
+        - else
+          Unconfirmed
+
 
     = f.fieldset('Password') do
       = f.input(:password)
@@ -23,13 +31,8 @@
           = af.input(:postcode)
           = af.input(:country)
 
-    = f.fieldset('Saved Payment Methods') do
-      = f.fields_for(:payment_methods) do |pmf|
-        .form-block
-          = pmf.input(:type, :collection => PaymentMethod.card_type_options, :include_blank => true, :label => 'Type')
-          = pmf.input(:default)
-          = pmf.input(:label)
-          = pmf.input(:provider)
+    - @member.payment_methods.each do |pm|
+      = pm.inspect
 
   = footer do
     = save_button
