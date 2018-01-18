@@ -7,6 +7,10 @@ class IslayMembers::MemberMailer <  Devise::Mailer
 
   layout 'mail'
 
+  def initialize
+    default_url_options[:host] = host
+  end
+
   def new_registration(record, opts={})
     devise_mail(record, :new_registration, opts) do |format|
       format.html {with_inline_styles render}
