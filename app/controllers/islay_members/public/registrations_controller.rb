@@ -11,7 +11,7 @@ class IslayMembers::Public::RegistrationsController < Devise::RegistrationsContr
   def create
     super
     if @member.persisted?
-      MemberMailer.new_registration(@member).deliver
+      IslayMembers::MemberMailer.new_registration(@member).deliver
     end
   end
 
