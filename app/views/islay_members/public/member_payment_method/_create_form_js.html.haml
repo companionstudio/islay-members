@@ -3,6 +3,7 @@
 :javascript
   var form = document.querySelector('#add-member-payment-method');
   var submit = form.querySelector('button[type="submit"]');
+  var messageContainer = form.querySelector('.validation-message');
 
   var options = {
     id: 'add-member-payment-method',
@@ -33,6 +34,12 @@
     },
     onReady: function(){
       submit.removeAttribute('disabled');
+    },
+    onError: function(details){
+      if (details['type'] == 'VALIDATION') {
+        $(form).addClass('is-invalid');
+        $(messageContainer).html('We couldn\'t save your card - please check your details and try again.');
+      }
     }
   };
 

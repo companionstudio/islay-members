@@ -1,4 +1,5 @@
 = form_tag({action: :create, controller: :member_payment_method}, id: 'add-member-payment-method', class: 'add-payment-method club-form') do
+  %p.note.validation-message
   .field
     %label Card number
     #card-number.hosted-input
