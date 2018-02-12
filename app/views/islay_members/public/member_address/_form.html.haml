@@ -13,7 +13,8 @@
   = f.input(:city)
   = f.input(:state)
   = f.input(:postcode)
-  = f.input(:country, collection: ['Australia'])
+  = f.input(:country, collection: [['Australia', 'AU']])
+  %p.note We currently only deliver to Australian addresses from our web shop.
   = f.input(:instructions, as: 'text')
 
   .club-form-controls
