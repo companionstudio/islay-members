@@ -2,6 +2,22 @@
   = record_name(@member.name, 'user', :when_blank => 'New Member')
   = form_errors(@member)
   = content do
+
+    - unless @member.new_record?
+      .member-overview
+        %ul
+          %li
+            %span.key Status
+            %span.value
+              - if f.object.confirmed?
+                Confirmed on #{@member.confirmed_at}
+              - else
+                Unconfirmed
+
+          %li
+            %span.key Member for
+            %span.value= distance_of_time_in_words_to_now(@member.created_at)
+
     = f.fieldset(:class => 'primary') do
       = f.input(:name, :col => 6)
       = f.input(:email, :col => 6)
@@ -9,12 +25,6 @@
 
     = f.fieldset('Status') do
       = f.input(:status, :collection => Member.member_status_options, :include_blank => true, :label => 'Status')
-      %p.note
-        - if f.object.confirmed?
-          Confirmed on #{f.object.confirmed_at}
-        - else
-          Unconfirmed
-
 
     = f.fieldset('Password') do
       = f.input(:password)
@@ -31,8 +41,27 @@
           = af.input(:postcode)
           = af.input(:country)
 
-    - @member.payment_methods.each do |pm|
-      = pm.inspect
+    = f.fieldset('Credit Cards') do
+      - if @member.payment_methods.present?
+        - @member.payment_methods.each do |pm|
+          .member-payment-method
+
+            .credit-card-detail
+              %span.type{:class => "card-type-#{pm.card_type}"}= pm.card_type
+              %span.number= pm.masked_number
+              - unless pm.cardholder_name.blank?
+                %span.name= pm.cardholder_name
+              %span.expiry Expiry: #{pm.expiration_month}/#{pm.expiration_year}
+
+            .member-payment-method-details
+              - if pm.default?
+                %span.indicator.ok Default
+
+              - if pm.expired?
+                %span.indicator.warning Expired
+
+      - else
+        %p This member doesn't have a credit card on file.
 
   = footer do
     = save_button

@@ -11,7 +11,7 @@
 
   = f.input(:number, input_opts(:number, :label => 'Card number', :pattern => '[0-9]*', :type => 'tel'))
   = f.input(:name, input_opts(:name))
-  = f.input(:cvv, input_opts(:cvv, :label => 'Security code', :pattern => '[0-9]*', :type => 'tel'))
+  = f.input(:cvv, input_opts(:cvv, :label => 'Security code', :pattern => '[0-9]*', :type => 'tel', :class => 'payment-method-cvv'))
   .inline-group
     = f.input(:expiration_month, select_opts(:expiration_month, 'Month', @months, :label => 'Expiry'))
     = f.input(:expiration_year, select_opts(:expiration_year, 'Year', @years, :label => '/'))

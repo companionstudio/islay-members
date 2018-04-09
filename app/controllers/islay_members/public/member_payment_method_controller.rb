@@ -1,6 +1,7 @@
 class IslayMembers::Public::MemberPaymentMethodController < IslayMembers::Public::ApplicationController
   before_action :authenticate_member!
   before_filter :generate_braintree_token, except: [:index, :show]
+  before_filter :find_resource, except: [:index, :new, :create]
 
   def index
   end
@@ -9,18 +10,24 @@ class IslayMembers::Public::MemberPaymentMethodController < IslayMembers::Public
   end
 
   def show
-    @payment_method = current_member.payment_methods.find{|pm|pm.token == params[:id]}
+
   end
 
   def edit
   end
 
   def create
-    result = Braintree::PaymentMethod.create(customer_id: current_member.payment_vault_id, payment_method_nonce: params['payment_method_nonce'])
+    unless current_member.payment_vault_id
+      current_member.create_braintree_customer
+      current_member.save
+    end
 
+    result = Braintree::PaymentMethod.create(customer_id: current_member.payment_vault_id, payment_method_nonce: params['payment_method_nonce'])
     if result.success?
+      current_member.save_payment_method_stub!(result.payment_method)
+
       flash[:result] = 'Payment method saved'
-      redirect_to public_member_payment_path
+      redirect_to public_member_payment_path(id: result.payment_method.token)
     else
       flash[:result] = "We couldn't save your card details"
     end
@@ -31,11 +38,14 @@ class IslayMembers::Public::MemberPaymentMethodController < IslayMembers::Public
   end
 
   def destroy
-    if @payment_method.destroy
-      flash[:result]  = 'Payment method deleted'
-      redirect_to([:public, :member, :payment_method, :index])
-    else
-      redirect_to([:edit, :public, :member, payment_method])
+    if @payment_method
+      result = @payment_method.delete
+      if result
+        flash[:result]  = 'Payment method removed'
+        redirect_to([:public, :member_payment, :index])
+      else
+        redirect_to([:edit, :public, :member, @payment_method])
+      end
     end
   end
 
@@ -50,7 +60,9 @@ class IslayMembers::Public::MemberPaymentMethodController < IslayMembers::Public
   end
 
   def find_resource
-
+    @payment_method = current_member.payment_methods.find{|pm|pm.token == params[:id]}
+    flash[:result]  = "The payment method requested couldn't be found"
+    redirect_to([:public, :member_payment, :index]) unless @payment_method
   end
 
   def new_resource

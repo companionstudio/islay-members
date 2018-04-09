@@ -11,15 +11,15 @@ module BraintreeCustomerConcern
   def create_braintree_customer
     raise "Braintree customer #{payment_vault_id} exists" unless payment_vault_id.blank?
 
-    last_braintree_result = Braintree::Customer.create(
+    result = Braintree::Customer.create(
       :first_name => first_name,
       :last_name => last_name,
       :last_name => last_name,
       :email => email,
       :phone => phone
     )
-    if last_braintree_result.success?
-      payment_vault_id = result.customer.id
+    if result.success?
+      self.payment_vault_id = result.customer.id
       true
     else
       false
@@ -40,5 +40,13 @@ module BraintreeCustomerConcern
 
   def default_payment_method
     payment_methods.find(&:default?)
+  end
+
+  def save_payment_method_stub!(payment_method)
+    payment_method_stubs.create!(label: "#{payment_method.card_type} ending in #{payment_method.last_4}", vault_token: payment_method.token, default: payment_method.default?, vault_expiry: Date.strptime("{ #{payment_method.expiration_year}, #{payment_method.expiration_month}, 01 }", "{ %Y, %m, %d }"))
+  end
+
+  def remove_payment_method_stub!(payment_method)
+    payment_method_stubs.where(vault_token: payment_method.token).delete
   end
 end

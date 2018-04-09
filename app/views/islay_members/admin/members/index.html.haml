@@ -10,15 +10,26 @@
 = content do
   %table.fixed-header(cellpadding=0 cellspacing=0)
     %thead
-      %th{:colspan => 2} Name
+      %th.boolean Active?
+      %th Name
+      %th Payment?
+      %th Address?
       %th Updated At
     %tbody
       - @members.each do |member|
         %tr
-          %td.status
-            = member.status
+          %td.boolean
+            %span(class="boolean #{member.status == 'active'}")
+              %span= friendly_bool(member.status == 'active')
+
+          %td= link_to(member.name, path(:edit, member), :class => 'title')
+          
+          %td.boolean
+            %span(class="boolean #{member.default_payment_method.present?}")
+              %span= friendly_bool(member.default_payment_method.present?)
           %td
-            = link_to(member.name, path(:edit, member), :class => 'title')
+            %span(class="boolean #{member.default_address.present?}")
+              %span= friendly_bool(member.default_address.present?)
           %td
             %span.time= member.updated_at
 

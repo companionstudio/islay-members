@@ -1,0 +1,18 @@
+= resource_form(@series) do |f|
+  = record_name(@series.name, 'user', :when_blank => 'New Series')
+  - if @series.new_record?
+    .islay-record-note
+      %p Club members can subscribe to a series to get access to special offers.
+
+  = form_errors(@series)
+
+  = content do
+
+    = f.fieldset(:class => 'primary') do
+      = f.input(:name, :col => 6)
+      = f.input(:description, :as => 'text')
+      = f.input(:frequency, :col => 6)
+      = f.input(:base_price, :col => 6)
+
+  = footer do
+    = save_button

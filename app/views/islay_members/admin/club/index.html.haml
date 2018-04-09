@@ -1,0 +1,20 @@
+- breadcrumb('Club')
+
+.dashboard-overview
+  .dashboard-overview-count
+    %span.value= Member.active.count
+    %span.key Active #{'Members'.pluralize(Subscription.active.count)}
+
+  .dashboard-overview-count
+    %span.value= Subscription.active.count
+    %span.key Active #{'Subscription'.pluralize(Subscription.active.count)}
+
+  - if Member.latest
+    .dashboard-overview-excerpt
+      %span.label Newest Member
+      %span.value= link_to(Member.latest.name, path(:edit, Member.latest))
+
+  - if Subscription.latest
+    .dashboard-overview-excerpt
+      %span.label Newest Subscriber
+      %span.value= link_to(Subscription.latest.subscriber.name, path(:edit, Subscription.latest.subscriber))

@@ -1,0 +1,77 @@
+- breadcrumb('Club', :club)
+- breadcrumb(@series.name)
+
+- if @series.active?
+  - status('Active', 'active', :mode => :ok)
+- else
+  - status('Inactive', 'Inactive')
+
+= record_name(@series.name, 'gift')
+
+= content(:class => 'inset') do
+  %div.overview
+    = column(8, :class => 'product-description') do
+      %ul.key-value
+        %li.desc
+          %span.key Description
+          %div.value
+            = simple_format(@series.description)
+
+        %li
+          %span.key Created at
+          %div.value= creation_time(@series)
+
+        %li
+          %span.key Updated at
+          %div.value= update_time(@series)
+
+  = form_tag(path(@series, :skus), :method => :put, :id => 'series-offers') do
+    %h3 Offers
+
+    %ul
+      %li= link_to('New Offer', path(:new, @series, :offer))
+
+    %table
+      %thead
+        %tr
+          %th.select= check_box_tag('table_select_all', 1, nil, :class => 'toggle')
+          %th.boolean Active
+          %th.boolean Status
+          %th SKU
+          %th
+          %th.number Stock
+          %th.meta.indicator Delete
+
+      %tbody
+        - @series.offers.each do |offer|
+          %tr
+            %td.select
+              = check_box_tag('ids[]', offer.id, selected?(offer.id), :class => 'toggle')
+            %td.boolean
+              = boolean_indicator(offer.published?)
+            %td.boolean
+              = offer_status(sku)
+            %td
+              %span.title= link_to(offer.name, path(:edit, @product, sku), :class => 'edit')
+            %td
+              - sku.current_price_points.summary.each do |s|
+                %span.islay-shop-price-point{:class => s[:mode]}
+                  %span.price= s[:price]
+                  %span.desc= s[:mode_desc]
+            %td.number.stock
+              = link_to(sku.stock_level, path(:stock_levels, :anchor => "sku-#{sku.id}"), :title => 'Adjust stock level')
+            %td.meta.adjust
+              - if sku.destroyable?
+                = link_to('Delete', path(:delete, @product, sku), :class => 'delete')
+              - else
+                %span.locked{:title => 'This SKU has been ordered, so it can\'t be deleted'} Locked
+
+    .table-footer
+      .selection-controls(colspan=7)
+        = position_buttons
+
+= footer do
+  = new_button('SKU', @product, :sku)
+  = edit_button(@product)
+  - if @product.destroyable?
+    = delete_button(@product)

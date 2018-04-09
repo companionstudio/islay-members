@@ -1,7 +1,11 @@
 class Member < ActiveRecord::Base
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :trackable, :validatable
   include BraintreeCustomerConcern
 
-  devise :database_authenticatable, :recoverable, :validatable, :registerable, :rememberable, :confirmable
+  devise :database_authenticatable, :recoverable, :validatable, :registerable, :rememberable, :confirmable, :trackable
 
   ACTIVE_USER_STATUSES = ['active'].freeze
   INACTIVE_USER_STATUSES = ['inactive', 'cancelled'].freeze
@@ -16,13 +20,15 @@ class Member < ActiveRecord::Base
 
   has_one :default_address, -> {where(:default => true)}, class_name: 'Address'
 
-  # has_many :payment_methods
-  # has_one  :default_payment_method, -> {where(:default => true)}, class_name: 'PaymentMethod'
+  has_many :payment_method_stubs, class_name: 'PaymentMethod'
+  has_one  :default_payment_method_stub, -> {where(:default => true)}, class_name: 'PaymentMethod'
 
   has_many :member_orders
   has_many :orders, through: :member_orders
   has_many :offer_orders, through: :orders
   has_many :offers, through: :offer_orders
+
+  has_one  :subscription
 
   accepts_nested_attributes_for :addresses, reject_if: proc {|a| a[:street].blank? and a[:postcode].blank?}
   # accepts_nested_attributes_for :payment_methods, reject_if: proc {|a| a[:provider].blank?}
@@ -35,12 +41,24 @@ class Member < ActiveRecord::Base
     end
   end
 
+  def self.complete
+    active.with_payment_method.with_address
+  end
+
   def self.active
     where(:status => ACTIVE_USER_STATUSES)
   end
 
+  def self.latest
+    active.order('created_at DESC').limit(1).first
+  end
+
   def self.with_payment_method
-    includes(:payment_methods).where.not(payment_methods: {id: nil})
+    includes(:default_payment_method_stub).where.not('payment_methods.id': nil)
+  end
+
+  def self.with_address
+    includes(:default_address).where.not('addresses.id': nil)
   end
 
   def self.member_status_options

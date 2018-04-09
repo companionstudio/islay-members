@@ -12,9 +12,28 @@ Rails.application.routes.draw do
   )
 
   islay_admin 'islay_members' do
+
+    get '/club' => 'club#index', as: 'club_dashboard'
+
     resources :members do
       get '(/filter-:filter)(/sort-:sort)', :action => :index, :as => 'filter_and_sort', :on => :collection
       get :delete, :on => :member
+
+      resources :subscriptions do
+        get '(/filter-:filter)(/sort-:sort)', :action => :index, :as => 'filter_and_sort', :on => :collection
+        get :delete, :on => :member
+      end
+    end
+
+    resources :series do
+      get '(/filter-:filter)(/sort-:sort)', :action => :index, :as => 'filter_and_sort', :on => :collection
+      get :delete, :on => :member
+    end
+
+    range = "(/month-:year-:month)(/range/:from/:to)"
+
+    scope :path => 'reports/members', :controller => 'reports' do
+      get range, :action => :index,    :as => 'member_reports'
     end
   end
 

@@ -12,10 +12,11 @@ Islay::Engine.extensions.register do |e|
 
   e.dashboard(:primary, :top, :memberships)
 
-  e.nav_section(:members) do |s|
-    s.root('Members', :members, 'user')
-    s.sub_nav('Index', :member_index)
-    s.sub_nav('Activity', :member_activity)
+  e.nav_section(:club) do |s|
+    s.root('Club', :club_dashboard, 'user')
+    s.sub_nav('Dashboard',        :club_dashboard, root: true)
+    s.sub_nav('Series & Offers',  :series_index)
+    s.sub_nav('Members',          :members)
   end
 
   e.nav_section(:reports) do |s|
@@ -31,6 +32,7 @@ Islay::Engine.extensions.register do |e|
       has_one :offer_order
       has_one :offer, through: :offer_order
     end
+  
   end
 
 end

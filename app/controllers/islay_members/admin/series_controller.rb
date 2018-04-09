@@ -1,12 +1,12 @@
 module IslayMembers
   module Admin
-    class MembersController < ApplicationController
-      resourceful :member
-      header 'Members'
+    class SeriesController < ApplicationController
+      resourceful :series
+      header 'Series'
       nav_scope :club
 
       def index
-        @members = Member.page(params[:page]).filtered(params[:filter]).sorted(params[:sort])
+        @series = Series.filtered(params[:filter])
       end
 
       def delete
@@ -15,7 +15,7 @@ module IslayMembers
       private
 
       def redirect_for(model)
-        path(:members)
+        path(:series)
       end
 
       def dependencies
@@ -23,7 +23,6 @@ module IslayMembers
       end
 
       def prepare_for_editing
-        @member.addresses.build
       end
     end
   end
