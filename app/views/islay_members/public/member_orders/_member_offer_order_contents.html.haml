@@ -1,0 +1,14 @@
+%table
+  %thead
+    %tr
+      %th.quantity Quantity
+      %th Product
+
+  %tbody
+    - order.sku_items.each do |item|
+      %tr
+        %td.quantity= item.quantity
+        %td
+          %a{:href => public_product_path(item.sku.product)}
+            = item.sku.product.name
+            %span.sku-description= item.sku.short_desc

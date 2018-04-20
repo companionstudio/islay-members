@@ -1,0 +1,23 @@
+%table.member-order-list
+  - if orders.empty?
+    %tbody
+      %tr
+        %td
+          You haven't placed any orders yet.
+  - else
+    %thead
+      %tr
+        %th Date
+        %th Order
+        %th Total
+        %th Status
+
+    %tbody
+      - orders.each do |order|
+        %tr
+          %td= order.created_at.to_s(:date_only)
+          %td
+            %a{href: public_member_order_path(order.reference)}
+              #{order.reference}
+          %td= order.total
+          %td= order.status.humanize

@@ -15,7 +15,7 @@ module IslayMembers
       private
 
       def redirect_for(model)
-        path(:members)
+        path(:edit, model)
       end
 
       def dependencies

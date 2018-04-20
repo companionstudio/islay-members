@@ -52,7 +52,7 @@
             %td.boolean
               = offer_status(sku)
             %td
-              %span.title= link_to(offer.name, path(:edit, @product, sku), :class => 'edit')
+              %span.title= link_to(offer.name, path(:edit, @series, offer), :class => 'edit')
             %td
               - sku.current_price_points.summary.each do |s|
                 %span.islay-shop-price-point{:class => s[:mode]}

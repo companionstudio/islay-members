@@ -1,8 +1,6 @@
 class Member < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
   include BraintreeCustomerConcern
 
   devise :database_authenticatable, :recoverable, :validatable, :registerable, :rememberable, :confirmable, :trackable
@@ -17,10 +15,18 @@ class Member < ActiveRecord::Base
   # multisearchable :against => [:name, :email]
 
   has_many :addresses
-
   has_one :default_address, -> {where(:default => true)}, class_name: 'Address'
 
-  has_many :payment_method_stubs, class_name: 'PaymentMethod'
+  has_many :payment_method_stubs, class_name: 'PaymentMethod' do
+    def expired?
+      where('vault_expiry < ?', Date.today)
+    end
+
+    def expiring?
+      where('vault_expiry < ?', Date.today - 30.days)
+    end
+  end
+
   has_one  :default_payment_method_stub, -> {where(:default => true)}, class_name: 'PaymentMethod'
 
   has_many :member_orders
@@ -29,6 +35,8 @@ class Member < ActiveRecord::Base
   has_many :offers, through: :offer_orders
 
   has_one  :subscription
+  has_one  :active_subscription, -> {where(:active => true)}, class_name: 'Subscription'
+  has_one  :inactive_subscription, -> {where(:active => false)}, class_name: 'Subscription'
 
   accepts_nested_attributes_for :addresses, reject_if: proc {|a| a[:street].blank? and a[:postcode].blank?}
   # accepts_nested_attributes_for :payment_methods, reject_if: proc {|a| a[:provider].blank?}
@@ -117,6 +125,10 @@ class Member < ActiveRecord::Base
     confirmed? and default_address.present? and default_payment_method.present?
   end
 
+  def subscribed?
+    active_subscription.present?
+  end
+
   def soft_delete
     update_attributes(status: 'cancelled', deleted_at: Time.current)
   end
@@ -129,6 +141,24 @@ class Member < ActiveRecord::Base
   # provide a custom message for a deleted account
   def inactive_message
   	!deleted_at ? super : :deleted_account
+  end
+
+  # Accessors to make the subscription toggle available via forms
+  def subscription_active
+    active_subscription.present?
+  end
+
+  def subscription_active=(state)
+    case state
+    when true, 'true', 1, '1'
+      if subscription.present?
+        subscription.activate!
+      else
+        create_subscription(active: true)
+      end
+    else
+      subscription.deactivate! if subscription.present?
+    end
   end
 
   private
@@ -151,4 +181,10 @@ class Member < ActiveRecord::Base
   def password_required?
     !persisted? || !password.blank? || !password_confirmation.blank?
   end
+
+
+  def confirmation_required?
+    false
+  end
+
 end

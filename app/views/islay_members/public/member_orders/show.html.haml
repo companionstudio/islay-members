@@ -1,0 +1,96 @@
+%h1 Your Order #{@member_order.reference}
+
+- if @member_order.offer_order.present?
+
+  - if @member_order.editable_by? :member
+    %p You can make changes to your order until #{@member_order.offer.close_at.to_s(:date_only)}
+
+    %ul.member_order_actions
+
+      - if @member_order.offer.adjustable_quantity?
+        %li.button-group
+          - if @member_order.offer.skippable?
+            = form_for([:public, :adjust_offer_order_quantities, @member_order], url: url_for(action: :adjust_offer_order_quantities, controller: :member_offer_orders, id: @member_order.reference)) do
+              - offer_order_quantity_range(@member_order.offer).each do |i|
+                %input{type: 'submit', name: 'quantity', value: i}
+
+  = render partial: 'member_offer_order_contents', locals: {order: @member_order}
+
+- else
+
+  = render partial: 'member_order_contents', locals: {order: @member_order}
+
+- if @member_order.pending_promotions.present?
+  .order-promotions
+    %h3 The following promotions were applied to your order:
+    %ul
+      - @member_order.pending_promotions.each do |promo|
+        %li= promo.summary_html
+
+
+- if @member_order.trackable? and !@member_order.tracking_reference.blank?
+
+  %p
+    Track your delivery:
+    %strong #{@member_order.tracking_reference}
+    = link_to('Track order&hellip;'.html_safe, @member_order.track_shipment, :class => 'track-order')
+
+
+.address
+  - if @member_order.use_billing_address?
+    %h3 Billing & Delivery Address
+    %p.note This address will be used for both billing and shipping.
+
+  - else
+    %h3 Billing Address
+
+  %ul.address-details
+    %li.name
+      %strong= @member_order.name
+      - if @member_order.billing_company
+        ,
+        %span.company #{@member_order.billing_company}
+    %li.street
+      %span.street= @member_order.billing_street
+    %li.city
+      %span.city= @member_order.billing_city
+    %li.state
+      %span.state #{@member_order.billing_state} #{@member_order.billing_postcode}
+
+- if @member_order.use_shipping_address?
+  .address
+    %h3 Delivery Address
+
+    %p
+      %span.name
+        %strong= @member_order.ship_to
+        - if @member_order.shipping_company
+          ,
+          %span.company #{@member_order.shipping_company}
+      %br/
+      %span.street= @member_order.shipping_street
+      %br/
+      %span.city= @member_order.shipping_city
+      %br/
+      %span.state #{@member_order.shipping_state} #{@member_order.shipping_postcode}
+
+- if @member_order.editable_by? :member
+
+  = simple_form_for([:edit, :public, current_member, @member_order], url: url_for(action: :update, controller: :member_orders, id: @member_order.reference), html: {class: 'club-form'}) do |f|
+    %fieldset
+      = f.input(:billing_company)
+      = f.input(:billing_street)
+      = f.input(:billing_city)
+      = f.input(:billing_state)
+      = f.input(:billing_postcode)
+
+    %fieldset
+      = f.input(:use_shipping_address)
+      = f.input(:shipping_name, :label => 'Recipient Name')
+      = f.input(:shipping_street, :label => 'Street')
+      = f.input(:shipping_city, :label => 'City')
+      = f.input(:shipping_state, :label => 'State')
+      = f.input(:shipping_postcode, :label => 'Postcode')
+
+    .club-form-controls
+      %button{:type => 'submit'} Save changes

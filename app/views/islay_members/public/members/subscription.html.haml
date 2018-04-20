@@ -1,0 +1,5 @@
+= simple_form_for(current_member, :url => public_member_subscription_update_path, html: {id: 'club-form'}) do |f|
+  - if current_member.active_subscription.present?
+    = f.button(:button, 'Deactivate my subscription', type: 'submit', name: 'subscription_active', value: false)
+  - else
+    = f.button(:button, 'Activate my subscription', type: 'submit', name: 'subscription_active', value: true)

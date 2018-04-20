@@ -10,4 +10,16 @@ class PaymentMethod < ActiveRecord::Base
       [t.humanize, t]
     end
   end
+
+  def expired?
+    vault_expiry < Date.today
+  end
+
+  def expiring?
+    vault_expiry < Date.today + 60.days
+  end
+
+  def remote_data
+    @remote_data ||= member.braintree_customer.payment_methods.find{|pm| pm.token == vault_token}
+  end
 end

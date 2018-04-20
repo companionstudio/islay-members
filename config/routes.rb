@@ -44,8 +44,16 @@ Rails.application.routes.draw do
       post  '/'         => 'members#update'
       patch '/'         => 'members#update', as: 'member_update'
 
-      resources :addresses, as: 'member_address', controller: 'member_address'
-      resources :payment_methods, path: 'payment', as: 'member_payment', controller: 'member_payment_method'
+      get   '/subscription'     => 'members#subscription',   as: 'member_subscription'
+      patch '/subscription'     => 'members#subscription',   as: 'member_subscription_update'
+
+      resources :addresses,       as: 'member_address', controller: 'member_address'
+      resources :payment_methods, as: 'member_payment', controller: 'member_payment_method', path: 'payment'
+      resources :orders,          as: 'member_orders',  controller: 'member_orders', :only => [:index, :show, :edit, :update]
+
+      patch :skip_offer_order,              controller: 'member_offer_orders'
+      patch :adjust_offer_order_quantities, controller: 'member_offer_orders'
+
     end
 
   end

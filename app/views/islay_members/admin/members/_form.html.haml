@@ -2,15 +2,14 @@
   = record_name(@member.name, 'user', :when_blank => 'New Member')
   = form_errors(@member)
   = content do
-
-    - unless @member.new_record?
-      .member-overview
-        %ul
+    = f.fieldset('Overview', :class => 'primary form-tab', :id => 'overview') do
+      - unless @member.new_record?
+        %ul.member-overview
           %li
             %span.key Status
             %span.value
               - if f.object.confirmed?
-                Confirmed on #{@member.confirmed_at}
+                Confirmed on #{@member.confirmed_at.to_s(:date_only)}
               - else
                 Unconfirmed
 
@@ -18,18 +17,15 @@
             %span.key Member for
             %span.value= distance_of_time_in_words_to_now(@member.created_at)
 
-    = f.fieldset(:class => 'primary') do
-      = f.input(:name, :col => 6)
-      = f.input(:email, :col => 6)
-      = f.input(:phone, :col => 6)
+        = f.input(:status, :collection => Member.member_status_options, :include_blank => true, :label => 'Status')
 
-    = f.fieldset('Status') do
-      = f.input(:status, :collection => Member.member_status_options, :include_blank => true, :label => 'Status')
+        = f.input(:name, :col => 6)
+        = f.input(:email, :col => 6)
+        = f.input(:phone, :col => 6)
 
-    = f.fieldset('Password') do
-      = f.input(:password)
+        = f.input(:password, :label => 'Set password')
 
-    = f.fieldset('Addresses') do
+    = f.fieldset('Addresses', :class => 'form-tab', :id => 'addresses') do
       = f.fields_for(:addresses) do |af|
         .form-block
           = af.input(:type, :collection => Address.address_type_options, :include_blank => true, :label => 'Type')
@@ -41,9 +37,19 @@
           = af.input(:postcode)
           = af.input(:country)
 
-    = f.fieldset('Credit Cards') do
+    = f.fieldset('Subscription', :class => 'form-tab', :id => 'subscription') do
+      = f.input(:subscription_active, as: 'boolean', label: 'Subscribed to offers?')
+
+      - if f.object.subscription
+        - if f.object.subscription.active?
+          %p.note Subscribed on #{f.object.subscription.created_at.to_s(:date_only)}
+        - else
+          %p.note Unsubscribed on #{f.object.subscription.updated_at.to_s(:date_only)}
+
+
+    = f.fieldset('Credit Cards', :class => 'form-tab', :id => 'payment-methods') do
       - if @member.payment_methods.present?
-        - @member.payment_methods.each do |pm|
+        - @member.payment_methods.sort{|a, b| a.default? ? 0 : 1}.each do |pm|
           .member-payment-method
 
             .credit-card-detail

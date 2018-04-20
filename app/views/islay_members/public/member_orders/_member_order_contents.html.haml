@@ -1,0 +1,49 @@
+%table
+  %thead
+    %tr
+      %th{:colspan => 2} Product
+      %th.sub-total Price
+      %th.quantity Quantity
+      %th.sub-total Sub-total
+
+  %tbody
+    - @member_order.sku_items.each do |item|
+      %tr
+        %td.image
+          .frame
+            %a{:href => public_product_path(item.sku.product)} Image
+        %td
+          %a{:href => public_product_path(item.sku.product)}
+            = item.sku.product.name
+            %span.sku-description= item.sku.short_desc
+        %td.price= item.price_summary
+        %td.quantity= item.quantity
+        %td.sub-total= item.formatted_total
+
+  %tfoot
+    %tr
+      %th{:colspan => 4, :scope => 'row'}
+        Sub-total
+      %td.sub-total
+        %span.product-total= @member_order.formatted_product_total
+    %tr{:class => "#{@member_order.shipping_total.zero? ? 'free' : ''}"}
+      %th{:colspan => 4, :scope => 'row'}
+        Shipping
+      %td.sub-total
+        = @member_order.formatted_shipping_total
+    - if @member_order.discounted?
+      %tr.discount
+        %th{:colspan => 4, :scope => 'row'}
+          Discount
+        %td.sub-total
+          = @member_order.formatted_total_discount
+    %tr
+      %th{:colspan => 4, :scope => 'row'}
+        Amount to pay
+      %td.total
+        %span.grand-total= @member_order.formatted_total
+    %tr.update
+      %th{:colspan => 4, :scope => 'row'}
+        Click update to see new totals
+      %td.controls
+        %button{:type => 'submit', :class => 'primary'} Update
