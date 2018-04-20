@@ -102,11 +102,11 @@ class Member < ActiveRecord::Base
   end
 
   def billing_address
-    addresses.count == 1 ? addresses.first : addresses.find_by(type: 'billing')
+    addresses.find_by(type: 'billing') || addresses.first
   end
 
   def shipping_address
-    addresses.count == 1 ? addresses.first : addresses.find_by(type: 'shipping')
+    addresses.find_by(type: 'shipping') || addresses.first
   end
 
   def destroyable?
