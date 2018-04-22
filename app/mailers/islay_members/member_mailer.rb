@@ -2,12 +2,12 @@ class IslayMembers::MemberMailer <  Devise::Mailer
   helper '/islay/public/application'
 
   default :from => Settings.for(:shop, :email),
-          :bcc => Settings.for(:shop, :email),
           :charset => 'UTF-8'
 
   layout 'mail'
 
   def new_registration(record, opts={})
+    @resource = record
     devise_mail(record, :new_registration, opts) do |format|
       format.html {with_inline_styles render}
     end
