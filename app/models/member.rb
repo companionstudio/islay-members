@@ -182,9 +182,4 @@ class Member < ActiveRecord::Base
     !persisted? || !password.blank? || !password_confirmation.blank?
   end
 
-
-  def confirmation_required?
-    false
-  end
-
 end
