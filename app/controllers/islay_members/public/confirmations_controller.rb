@@ -22,7 +22,9 @@ class IslayMembers::Public::ConfirmationsController < Devise::ConfirmationsContr
   # end
 
   # The path used after confirmation.
-  # def after_confirmation_path_for(resource_name, resource)
-  #   super(resource_name, resource)
-  # end
+  def after_confirmation_path_for(resource_name, resource)
+    #super(resource_name, resource)
+    flash[:membership_completion] == :email_confirmed
+    path(:club)
+  end
 end

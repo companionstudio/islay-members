@@ -5,9 +5,11 @@ Rails.application.routes.draw do
     :path_names   => {:sign_in => 'log-in', :sign_out => 'log-out'},
     :password_length => (5..72),
     :controllers  => {
-      :sessions => "islay_members/public/sessions",
-      :passwords => "islay_members/public/passwords",
-      :registrations => 'islay_members/public/registrations'
+      :sessions      => 'islay_members/public/sessions',
+      :passwords     => 'islay_members/public/passwords',
+      :registrations => 'islay_members/public/registrations',
+      :confirmations => 'islay_members/public/confirmations'
+
     }
   )
 
