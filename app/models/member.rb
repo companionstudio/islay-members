@@ -88,17 +88,6 @@ class Member < ActiveRecord::Base
     order(sort || :name)
   end
 
-  def self.activity(period: 24.hours)
-    time_threshold = period.ago
-    updated_subscriptions = ::Subscription.where('updated_at > ?', time_threshold)
-    created_subscriptions = ::Subscription.where('created_at > ?', time_threshold)
-    logins = ::Subscription.where('last_sign_in_at > ?', time_threshold)
-
-
-  end
-
-
-
   def first_name
     parts = name.split(' ')
     case parts.count
