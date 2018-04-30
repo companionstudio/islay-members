@@ -2,9 +2,11 @@
 
 - filter_nav(:members, 'Enabled')
 - filter_nav(:members, 'Disabled', 'disabled')
+- filter_nav(:members, 'Subscribed', 'subscribed')
 - filter_nav(:members, 'All', 'all')
 
 - sort_nav(:members, 'Name')
+- sort_nav(:members, 'Joinedd', 'created_at')
 - sort_nav(:members, 'Updated', 'updated_at')
 
 = content do
@@ -14,7 +16,9 @@
       %th Name
       %th Payment?
       %th Address?
-      %th Updated At
+      %th Subscribed?
+      %th Joined
+      %th Updated
     %tbody
       - @members.each do |member|
         %tr
@@ -23,13 +27,18 @@
               %span= friendly_bool(member.status == 'active')
 
           %td= link_to(member.name, path(:edit, member), :class => 'title')
-          
+
           %td.boolean
             %span(class="boolean #{member.default_payment_method.present?}")
               %span= friendly_bool(member.default_payment_method.present?)
-          %td
+          %td.boolean
             %span(class="boolean #{member.default_address.present?}")
               %span= friendly_bool(member.default_address.present?)
+          %td.boolean
+            %span(class="boolean #{member.subscribed?}")
+              %span= friendly_bool(member.subscribed?)
+          %td
+            %span.time= member.created_at
           %td
             %span.time= member.updated_at
 

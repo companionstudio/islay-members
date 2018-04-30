@@ -45,6 +45,7 @@ class Member < ActiveRecord::Base
     case filter
     when 'all' then all
     when 'disabled' then where.not(:status => ACTIVE_USER_STATUSES)
+    when 'subscribed' then subscribed
     else where(:status => ACTIVE_USER_STATUSES)
     end
   end
@@ -69,6 +70,10 @@ class Member < ActiveRecord::Base
     includes(:default_address).where.not('addresses.id': nil)
   end
 
+  def self.subscribed
+    includes(:active_subscription).where.not('subscriptions.id': nil)
+  end
+
   def self.member_status_options
     @member_status_options ||= USER_STATUSES.map do |t|
       [t.humanize, t]
@@ -82,6 +87,17 @@ class Member < ActiveRecord::Base
   def self.sorted(sort)
     order(sort || :name)
   end
+
+  def self.activity(period: 24.hours)
+    time_threshold = period.ago
+    updated_subscriptions = ::Subscription.where('updated_at > ?', time_threshold)
+    created_subscriptions = ::Subscription.where('created_at > ?', time_threshold)
+    logins = ::Subscription.where('last_sign_in_at > ?', time_threshold)
+
+
+  end
+
+
 
   def first_name
     parts = name.split(' ')

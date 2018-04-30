@@ -14,20 +14,21 @@
 
     %tbody
       - payment_methods.each do |payment_method|
-        %tr
-          %td
-            %a{href: public_member_payment_path(payment_method.vault_token)}
-              %img{src: payment_method.remote_data.image_url}
-              #{payment_method.remote_data.cardholder_name} #{payment_method.remote_data.card_type} ending in #{payment_method.remote_data.last_4}
+        - if payment_method.remote_data.present?
+          %tr
+            %td
+              %a{href: public_member_payment_path(payment_method.vault_token)}
+                %img{src: payment_method.remote_data.image_url}
+                #{payment_method.remote_data.cardholder_name} #{payment_method.remote_data.card_type} ending in #{payment_method.remote_data.last_4}
 
-          %td #{payment_method.remote_data.expiration_month}/#{payment_method.remote_data.expiration_year}
-          %td
-            - if payment_method.default?
-              %span.payment-method-list-flag Default
-            - if payment_method.expired?
-              %span.payment-method-list-flag.is-expired Expired
-            - if payment_method.expiring?
-              %span.payment-method-list-flag.is-expired Expires soon
+            %td #{payment_method.remote_data.expiration_month}/#{payment_method.remote_data.expiration_year}
+            %td
+              - if payment_method.default?
+                %span.payment-method-list-flag Default
+              - if payment_method.expired?
+                %span.payment-method-list-flag.is-expired Expired
+              - if payment_method.expiring?
+                %span.payment-method-list-flag.is-expired Expires soon
 
     %tfoot
       %tr
