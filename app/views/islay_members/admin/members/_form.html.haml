@@ -48,23 +48,56 @@
 
 
     = f.fieldset('Credit Cards', :class => 'form-tab', :id => 'payment-methods') do
+      - if @member.payment_error_notifications.present?
+        .panel
+          %h2 Payment problems
+          %p.note There have been issues with charging this member's card.
+
+          %table.logs
+            %thead
+              %tr
+                %th.boolean Succeeded?
+                %th Action
+                %th.notes Notes
+                %th.meta On
+
+            %tbody
+              - @member.payment_error_notifications.each do |log|
+                %tr
+                  %td.boolean
+                    %span(class="boolean #{log.succeeded?}")
+                      %span= friendly_bool(log.succeeded?)
+                  %td
+                    %span.title
+                      = link_to("#{log.action.humanize} #{log.order.reference}", path(log.order))
+
+                  %td
+                    - if log.notes?
+                      = simple_format(log.notes)
+                    - else
+                      &nbsp;
+                  %td.meta
+                    %span= log.created_at.to_formatted_s(:pretty)
+
       - if @member.payment_methods.present?
-        - @member.payment_methods.sort{|a, b| a.default? ? 0 : 1}.each do |pm|
-          .member-payment-method
+        .panel
+          %h2 Saved Credit Cards
+          - @member.payment_methods.sort{|a, b| a.default? ? 0 : 1}.each do |pm|
+            .member-payment-method
 
-            .credit-card-detail
-              %span.type{:class => "card-type-#{pm.card_type}"}= pm.card_type
-              %span.number= pm.masked_number
-              - unless pm.cardholder_name.blank?
-                %span.name= pm.cardholder_name
-              %span.expiry Expiry: #{pm.expiration_month}/#{pm.expiration_year}
+              .credit-card-detail
+                %span.type{:class => "card-type-#{pm.card_type}"}= pm.card_type
+                %span.number= pm.masked_number
+                - unless pm.cardholder_name.blank?
+                  %span.name= pm.cardholder_name
+                %span.expiry Expiry: #{pm.expiration_month}/#{pm.expiration_year}
 
-            .member-payment-method-details
-              - if pm.default?
-                %span.indicator.ok Default
+              .member-payment-method-details
+                - if pm.default?
+                  %span.indicator.ok Default
 
-              - if pm.expired?
-                %span.indicator.warning Expired
+                - if pm.expired?
+                  %span.indicator.warning Expired
 
       - else
         %p This member doesn't have a credit card on file.

@@ -33,6 +33,7 @@ class Member < ActiveRecord::Base
   has_many :orders, through: :member_orders
   has_many :offer_orders, through: :orders
   has_many :offers, through: :offer_orders
+  has_many :order_logs, through: :orders, source: :logs
 
   has_one  :subscription
   has_one  :active_subscription, -> {where(:active => true)}, class_name: 'Subscription'
@@ -164,6 +165,11 @@ class Member < ActiveRecord::Base
     else
       subscription.deactivate! if subscription.present?
     end
+  end
+
+  # Extract any payment errors from pending offer orders
+  def payment_error_notifications
+    order_logs.joins(:order => :offer_order).where("orders.status IN ('pending') AND order_logs.succeeded = false AND order_logs.action = 'bill' ")
   end
 
   private
