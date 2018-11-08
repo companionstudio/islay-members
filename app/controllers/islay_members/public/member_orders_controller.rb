@@ -30,7 +30,7 @@ class IslayMembers::Public::MemberOrdersController < IslayMembers::Public::Appli
   end
 
   def find_resource
-    @member_order = current_member.orders.find_by_reference(params[:id])
+    @member_order = current_member.orders.find_by(reference: params[:id])
   end
 
 end

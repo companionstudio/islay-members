@@ -33,8 +33,12 @@ module BraintreeCustomerConcern
   end
 
   def payment_methods
-    return [] unless braintree_customer
-    @payment_methods ||= braintree_customer.payment_methods
+    begin
+      return [] unless braintree_customer
+      @payment_methods ||= braintree_customer.payment_methods
+    rescue Braintree::NotFoundError
+      []
+    end
   end
 
   def default_payment_method

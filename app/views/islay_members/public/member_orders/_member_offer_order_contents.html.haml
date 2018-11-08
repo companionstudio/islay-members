@@ -3,6 +3,7 @@
     %tr
       %th.quantity Quantity
       %th Product
+      %th Regular price
 
   %tbody
     - order.sku_items.each do |item|
@@ -12,3 +13,50 @@
           %a{:href => public_product_path(item.sku.product)}
             = item.sku.product.name
             %span.sku-description= item.sku.short_desc
+        %td.price= item.sku.single_price.to_s(drop_cents: 0)
+
+  %tfoot
+    %tr
+      %th(colspan=3)
+        Product Total
+      %td.currency
+        %span.numeric= order.original_product_total
+      %td.currency
+        - if order.adjusted_products?
+          %span.numeric.discount #{order.product_total}
+        - else
+          &nbsp;
+
+    %tr
+      %th(colspan=3)
+        Shipping
+      %td.currency
+        %span.numeric= order.original_shipping_total
+      %td.currency
+        - if order.free_shipping?
+          FREE
+        - elsif order.adjusted_shipping?
+          %span.numeric= order.shipping_total
+
+    - if order.discounted?
+      %tr
+        %th(colspan=3)
+          Total discount
+        %td.currency{colspan: 2}
+          %span.numeric= "#{order.formatted_total_discount}"
+
+    %tr.total
+      %th(colspan=3)
+        Total
+      %td.currency
+        %span.numeric= order.formatted_original_total
+      %td
+        - if order.discounted?
+          %span.numeric.discount #{order.formatted_total}
+
+
+- if order.total != order.offer.price
+  %p.note
+    %strong Why is my total not quite #{order.offer.price.to_s(drop_cents: true)}?
+    We split the discount for each product in the offer, and any delivery costs, as an even percentage.
+    To keep the prices to a whole number of cents, the final price may be a cent or two different to the base offer price shown.

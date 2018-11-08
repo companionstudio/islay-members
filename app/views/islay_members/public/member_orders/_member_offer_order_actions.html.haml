@@ -1,0 +1,12 @@
+%ul.member_order_actions
+  - if @member_order.cancelled?
+    = form_for([:public, :restore_offer_order, @member_order], url: url_for(action: :restore_offer_order, controller: :member_offer_orders, id: @member_order.reference)) do
+      - offer_order_quantity_range(@member_order.offer).each do |i|
+        %input{type: 'submit', name: 'quantity', value: i == 0 ? 'Skip this offer' : i}
+
+  - elsif @member_order.offer.adjustable_quantity?
+    %li.button-group
+      - if @member_order.offer.skippable?
+        = form_for([:public, :adjust_offer_order_quantities, @member_order], url: url_for(action: :adjust_offer_order_quantities, controller: :member_offer_orders, id: @member_order.reference)) do
+          - offer_order_quantity_range(@member_order.offer).each do |i|
+            %input{type: 'submit', name: 'quantity', value: i == 0 ? 'Skip this offer' : i}

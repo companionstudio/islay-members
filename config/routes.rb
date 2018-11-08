@@ -55,6 +55,7 @@ Rails.application.routes.draw do
 
       patch :skip_offer_order,              controller: 'member_offer_orders'
       patch :adjust_offer_order_quantities, controller: 'member_offer_orders'
+      patch :restore_offer_order,           controller: 'member_offer_orders'
 
     end
 

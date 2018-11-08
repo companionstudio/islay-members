@@ -20,6 +20,10 @@ class PaymentMethod < ActiveRecord::Base
   end
 
   def remote_data
-    @remote_data ||= member.braintree_customer.payment_methods.find{|pm| pm.token == vault_token}
+    @remote_data ||= begin
+      member.braintree_customer.payment_methods.find{|pm| pm.token == vault_token}
+    rescue Braintree::NotFoundError
+      []
+    end
   end
 end

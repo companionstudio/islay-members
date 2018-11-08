@@ -18,5 +18,7 @@ class MemberOrder < ActiveRecord::Base
     order.shipping_postcode ||= member.shipping_address.postcode
     order.shipping_state    ||= member.shipping_address.state
     order.shipping_country  ||= member.shipping_address.country
+
+    nil
   end
 end
