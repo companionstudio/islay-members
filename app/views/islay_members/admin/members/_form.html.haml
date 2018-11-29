@@ -19,9 +19,9 @@
 
         = f.input(:status, :collection => Member.member_status_options, :include_blank => true, :label => 'Status')
 
-        = f.input(:name, :col => 6)
-        = f.input(:email, :col => 6)
-        = f.input(:phone, :col => 6)
+        = f.input(:name)
+        = f.input(:email)
+        = f.input(:phone)
 
         = f.input(:password, :label => 'Set password')
 

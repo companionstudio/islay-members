@@ -6,7 +6,7 @@ module IslayMembers
       nav_scope :club
 
       def index
-        @members = Member.page(params[:page]).filtered(params[:filter]).sorted(params[:sort])
+        @members = Member.includes(:active_subscription, :default_address).page(params[:page]).filtered(params[:filter]).sorted(params[:sort])
       end
 
       def delete

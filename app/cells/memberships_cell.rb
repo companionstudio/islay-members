@@ -1,4 +1,4 @@
-class MembershipsCell < Cell::Rails
+class MembershipsCell < Islay::ApplicationCell
   def index
   end
 end
