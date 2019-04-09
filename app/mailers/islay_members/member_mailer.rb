@@ -53,6 +53,16 @@ class IslayMembers::MemberMailer <  Devise::Mailer
     }
   end
 
+  def mail_asset_url(path)
+    if Rails.env == "development"
+      Rails.application.assets.find_asset(path)
+    elsif Rails.env == "production"
+      Rails.application.assets_manifest.find_sources("#{path}.css").first
+    end
+  end
+
+  helper_method :mail_asset_url
+
   private
 
   def host
