@@ -23,6 +23,7 @@ class IslayMembers::Public::MemberPaymentMethodController < IslayMembers::Public
     end
 
     result = Braintree::PaymentMethod.create(customer_id: current_member.payment_vault_id, payment_method_nonce: params['payment_method_nonce'])
+
     if result.success?
       current_member.save_payment_method_stub!(result.payment_method)
 

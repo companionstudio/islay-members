@@ -27,7 +27,7 @@
                 %span.payment-method-list-flag Default
               - if payment_method.expired?
                 %span.payment-method-list-flag.is-expired Expired
-              - if payment_method.expiring?
+              - elsif payment_method.expiring?
                 %span.payment-method-list-flag.is-expired Expires soon
 
     %tfoot
