@@ -168,8 +168,19 @@ class Member < ActiveRecord::Base
   end
 
   # Extract any payment errors from pending offer orders
+  #
   def payment_error_notifications
-    order_logs.joins(:order => :offer_order).where("orders.status IN ('pending') AND order_logs.succeeded = false AND lower(order_logs.action) IN ('bill', 'payment') ")
+    payment_logs = order_logs
+      .joins(:order => :offer_order)
+      .where("orders.status IN ('pending') AND lower(order_logs.action) IN ('bill', 'payment')")
+      .order('order_logs.created_at')
+
+    payment_logs.group_by(&:order_id).reduce([]) do |a, (order_id, logs)|
+        logs.sort_by(&:created_at).reverse.first.tap do |log|
+          a.push log unless log.succeeded?
+        end
+      a
+    end.flatten
   end
 
   private
