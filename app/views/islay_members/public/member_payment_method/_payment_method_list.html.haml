@@ -11,6 +11,7 @@
         %th Card
         %th Expiry
         %th
+        %th
 
     %tbody
       - payment_methods.each do |payment_method|
@@ -25,11 +26,20 @@
             %td
               - if payment_method.default?
                 %span.payment-method-list-flag Default
+
               - if payment_method.expired?
                 %span.payment-method-list-flag.is-expired Expired
+
+
+
               - elsif payment_method.expiring?
                 %span.payment-method-list-flag.is-expired Expires soon
+            %td.actions
+              - if payment_method.expired?
+                = button_to({action: :destroy, controller: :member_payment_method, id: payment_method.vault_token}, method: 'delete') do
+                  Remove
+
 
     %tfoot
       %tr
-        %td{colspan: 3}= link_to('Add another card', new_public_member_payment_path)
+        %td{colspan: 4}= link_to('Add another card', new_public_member_payment_path)

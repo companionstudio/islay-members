@@ -13,11 +13,15 @@
         %th Status
 
     %tbody
-      - orders.each do |order|
+      - orders.sort{|a, b| b.created_at <=> a.created_at}.each do |order|
         %tr
           %td= order.created_at.to_s(:date_only)
           %td
             %a{href: public_member_order_path(order.reference)}
+              - if order.payment_errors?
+                %span.member-order-list-flag.is-warning{title: 'There were payment problems with your order'} !
+
               #{order.reference}
           %td= order.total
-          %td= order.status.humanize
+          %td
+            %span.member-order-list-flag{class: "is-#{order.status.parameterize}"}= order.status.humanize

@@ -62,8 +62,10 @@ class IslayMembers::Public::MemberPaymentMethodController < IslayMembers::Public
 
   def find_resource
     @payment_method = current_member.payment_methods.find{|pm|pm.token == params[:id]}
-    flash[:result]  = "The payment method requested couldn't be found"
-    redirect_to([:public, :member_payment, :index]) unless @payment_method
+    unless @payment_method
+      flash[:result]  = "The payment method requested couldn't be found"
+      redirect_to([:public, :member_payment, :index])
+    end
   end
 
   def new_resource

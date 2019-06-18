@@ -14,7 +14,7 @@ class PaymentMethod < ActiveRecord::Base
   end
 
   def siblings
-    member.payment_methods.reject{|pm|pm.token == token}reject{|pm|pm.expired?}.empty?
+    member.payment_method_stubs.reject{|pm|pm.vault_token == vault_token}#.reject{|pm|pm.expired?}
   end
 
   def expired?
@@ -38,7 +38,17 @@ class PaymentMethod < ActiveRecord::Base
   # When creating, if this is the only payment method, or the only non-expired payment method,
   # mark as the default
   def assign_default
-    binding.pry
-    self.default = true if siblings.reject{|pm|pm.expired?}.empty?
+    siblings.each do |s|
+      if s.remote_data
+        Braintree::PaymentMethod.update(s.vault_token, options: {make_default: false})
+        s.update_column(:default, false)
+      else
+        # With no remote data, this method has been removed on the gateway. Mark it as dead.
+        s.update_columns(default: false, status: 'removed')
+      end
+    end
+
+    Braintree::PaymentMethod.update(vault_token, options: {make_default: true})
+    self.default = true
   end
 end

@@ -1,17 +1,18 @@
 = form_tag({action: :create, controller: :member_payment_method}, id: 'add-member-payment-method', class: 'add-payment-method club-form') do
-  %fieldset
-    %p.note.validation-message
-    .field.payment-method-card-number
-      %label Card number
-      #card-number.hosted-input
-    .field.payment-method-cvv
-      %label CVV
-      #cvv.hosted-input
-    .field.payment-method-expiry
-      %label Expiry
-      .inline-group
-        #expiration-month.hosted-input
-        #expiration-year.hosted-input
+  %fieldset.payment-method-detail
+    .payment-method-detail-liner
+      %p.note.validation-message
+      .field.payment-method-card-number
+        %label Card number
+        #card-number.hosted-input
+      .field.payment-method-cvv
+        %label CVV
+        #cvv.hosted-input
+      .field.payment-method-expiry
+        %label Expiry
+        .inline-group
+          #expiration-month.hosted-input
+          #expiration-year.hosted-input
 
     .add-payment-method-controls
       %button{type: 'submit', disabled: 'disabled'} Save
